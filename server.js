@@ -69,6 +69,55 @@ app.get('/student2', (req, res) => {
   });
 });
 
+// Add a route for Teacher 1 dashboard
+app.get('/teacher1', (req, res) => {
+  // Fetch data for students and teacher details under Teacher 1 for CG
+  const query = `
+  SELECT student.roll_no, student.s_name, student.CG_mks, teacher.t_name, teacher.is_CC, subject.sub_name
+  FROM student
+  JOIN teacher ON student.CG_mks IS NOT NULL AND teacher.sub_code = 214453 AND teacher.teacher_id = 1
+  JOIN subject ON subject.sub_code = teacher.sub_code;
+  
+  `;
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Send data to the HTML template
+    res.json(results);
+  });
+});
+
+
+app.post('/updateMarks/:subject/:marks', (req, res) => {
+  const { subject, marks } = req.params;
+  const teacherId = 1; // Assuming the teacher_id for Teacher 1 is 1
+
+  // SQL query to update marks based on the subject and teacher_id
+  const updateQuery = `
+    UPDATE marks
+    SET marks = ?
+    WHERE sub_code = (SELECT sub_code FROM subject WHERE sub_name = ?)
+      AND roll_no IN (SELECT roll_no FROM teacher WHERE teacher_id = ?);
+  `;
+
+  // Execute the update query
+  connection.query(updateQuery, [marks, subject, teacherId], (err, results) => {
+    if (err) {
+      console.error('Error updating marks:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Send a success message or appropriate response
+    res.json({ message: 'Marks updated successfully' });
+  });
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
