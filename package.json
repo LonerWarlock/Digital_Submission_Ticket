@@ -1,0 +1,16 @@
+{
+  "name": "digi_sub_tick",
+  "version": "1.0.0",
+  "description": "Digital Submission Ticket",
+  "main": "server.js",
+  "scripts": {
+    "test": "console.log(\"hello\")",
+    "start": "node server.js"
+  },
+  "author": "G10_02",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^3.9.2"
+  }
+}
