@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Fetch data for Teacher 1 from the server
   fetch("/teacher2")
     .then(response => response.json())
     .then(data => {
@@ -11,8 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // Display teacher details
       const teacherInfo = data[0];
       teacherNameElement.innerText = `${teacherInfo.t_name}`;
-
-      // Display additional teacher details
       teacherDetails.innerText = `Subject: ${teacherInfo.sub_name}`;
 
       // Display student details in a table
@@ -41,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateButton.innerText = "Update";
         updateButton.addEventListener("click", () => {
           // Call the function to update marks when the button is clicked
-          updateMarks(student.roll_no, inputMarks.value);
+          updateMarks(student.roll_no, inputMarks.value, 2);
         });
         cellUpdateMarks.appendChild(updateButton);
       });
@@ -98,9 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Error fetching data:", error));
 
   // Function to update marks
-  function updateMarks(rollNo, newMarks) {
+  function updateMarks(rollNo, newMarks, teacherId) {
     // Call the API endpoint to update marks
-    fetch(`/updateMarks/PA/${newMarks}/${rollNo}`, { method: 'POST' })
+    fetch(`/updateMarks/PA/${newMarks}/${rollNo}/${teacherId}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         // Display a success message or handle as needed

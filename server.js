@@ -131,9 +131,8 @@ app.get('/allStudents', (req, res) => {
 });
 
 
-app.post('/updateMarks/:subject/:marks/:rollNo', (req, res) => {
-  const { subject, marks, rollNo } = req.params;
-  const teacherId = 1; // Assuming the teacher_id for Teacher 1 is 1
+app.post('/updateMarks/:subject/:marks/:rollNo/:teacherId', (req, res) => {
+  const { subject, marks, rollNo, teacherId } = req.params;
 
   // SQL query to update marks based on the subject, roll_no, and teacher_id
   const updateQuery = `

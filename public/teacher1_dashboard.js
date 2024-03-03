@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateButton.innerText = "Update";
         updateButton.addEventListener("click", () => {
           // Call the function to update marks when the button is clicked
-          updateMarks(student.roll_no, inputMarks.value);
+          updateMarks(student.roll_no, inputMarks.value, 1);
         });
         cellUpdateMarks.appendChild(updateButton);
       });
@@ -98,9 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Error fetching data:", error));
 
   // Function to update marks
-  function updateMarks(rollNo, newMarks) {
+  function updateMarks(rollNo, newMarks, teacherId) {
     // Call the API endpoint to update marks
-    fetch(`/updateMarks/CG/${newMarks}/${rollNo}`, { method: 'POST' })
+    fetch(`/updateMarks/CG/${newMarks}/${rollNo}/${teacherId}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         // Display a success message or handle as needed
