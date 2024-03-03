@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Fetch data for Teacher 1 from the server
-  fetch("/teacher1")
+  fetch("/teacher2")
     .then(response => response.json())
     .then(data => {
       // Update the DOM with the fetched data
@@ -28,12 +28,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cellRollNo.innerText = student.roll_no;
         cellName.innerText = student.s_name;
-        cellMarks.innerText = student.CG_mks;
+        cellMarks.innerText = student.PA_mks;
 
         // Create input box for updating marks
         const inputMarks = document.createElement("input");
         inputMarks.type = "number";
-        inputMarks.value = student.CG_mks; // Set the default value to the current marks
+        inputMarks.value = student.PA_mks; // Set the default value to the current marks
         cellUpdateMarks.appendChild(inputMarks);
 
         // Create update button
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to update marks
   function updateMarks(rollNo, newMarks) {
     // Call the API endpoint to update marks
-    fetch(`/updateMarks/CG/${newMarks}/${rollNo}`, { method: 'POST' })
+    fetch(`/updateMarks/PA/${newMarks}/${rollNo}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         // Display a success message or handle as needed

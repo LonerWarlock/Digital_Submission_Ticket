@@ -92,6 +92,44 @@ app.get('/teacher1', (req, res) => {
   });
 });
 
+app.get('/teacher2', (req, res) => {
+  // Fetch data for students and teacher details under Teacher 2 for PA
+  const query = `
+    SELECT student.roll_no, student.s_name, student.PA_mks, teacher.t_name, teacher.is_CC, subject.sub_name
+    FROM student
+    JOIN teacher ON student.PA_mks IS NOT NULL AND teacher.sub_code = 214451 AND teacher.teacher_id = 2
+    JOIN subject ON subject.sub_code = teacher.sub_code;
+  `;
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Send data to the HTML template
+    res.json(results);
+  });
+});
+
+app.get('/allStudents', (req, res) => {
+  const query = `
+    SELECT roll_no, s_name, attendance
+    FROM student;
+  `;
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching all students data:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
 
 app.post('/updateMarks/:subject/:marks/:rollNo', (req, res) => {
   const { subject, marks, rollNo } = req.params;
@@ -118,6 +156,28 @@ app.post('/updateMarks/:subject/:marks/:rollNo', (req, res) => {
   });
 });
 
+app.post('/updateAttendance/:newAttendance/:rollNo', (req, res) => {
+  const { newAttendance, rollNo } = req.params;
+
+  // SQL query to update attendance based on roll_no
+  const updateAttendanceQuery = `
+    UPDATE student
+    SET attendance = ?
+    WHERE roll_no = ?;
+  `;
+
+  // Execute the update attendance query
+  connection.query(updateAttendanceQuery, [newAttendance, rollNo], (err, results) => {
+    if (err) {
+      console.error('Error updating attendance:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Send a success message or appropriate response
+    res.json({ message: 'Attendance updated successfully' });
+  });
+});
 
 // Start the server
 app.listen(port, () => {
