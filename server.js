@@ -93,20 +93,20 @@ app.get('/teacher1', (req, res) => {
 });
 
 
-app.post('/updateMarks/:subject/:marks', (req, res) => {
-  const { subject, marks } = req.params;
+app.post('/updateMarks/:subject/:marks/:rollNo', (req, res) => {
+  const { subject, marks, rollNo } = req.params;
   const teacherId = 1; // Assuming the teacher_id for Teacher 1 is 1
 
-  // SQL query to update marks based on the subject and teacher_id
+  // SQL query to update marks based on the subject, roll_no, and teacher_id
   const updateQuery = `
-    UPDATE marks
-    SET marks = ?
-    WHERE sub_code = (SELECT sub_code FROM subject WHERE sub_name = ?)
-      AND roll_no IN (SELECT roll_no FROM teacher WHERE teacher_id = ?);
+    UPDATE student
+    SET ${mysql.escapeId(`${subject}_mks`)} = ?
+    WHERE roll_no = ?
+      AND roll_no IN (SELECT roll_no FROM teacher WHERE teacher_id = ? AND sub_code = (SELECT sub_code FROM subject WHERE sub_name = ?));
   `;
 
   // Execute the update query
-  connection.query(updateQuery, [marks, subject, teacherId], (err, results) => {
+  connection.query(updateQuery, [marks, rollNo, teacherId, subject], (err, results) => {
     if (err) {
       console.error('Error updating marks:', err);
       res.status(500).send('Internal Server Error');
@@ -117,6 +117,7 @@ app.post('/updateMarks/:subject/:marks', (req, res) => {
     res.json({ message: 'Marks updated successfully' });
   });
 });
+
 
 // Start the server
 app.listen(port, () => {
