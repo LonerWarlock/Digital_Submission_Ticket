@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "196429807242",
+    "project_id": "admission-ticket-app",
+    "storage_bucket": "admission-ticket-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196429807242:android:9cf7ccede28ea7e5c23773",
+        "android_client_info": {
+          "package_name": "com.admission.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY49i0eQCpg3h0kVo0wDXdqbrKQDsVn94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196429807242:android:b6e86a1325564c6ec23773",
+        "android_client_info": {
+          "package_name": "com.admission_ticket_app.admission_ticket_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY49i0eQCpg3h0kVo0wDXdqbrKQDsVn94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
