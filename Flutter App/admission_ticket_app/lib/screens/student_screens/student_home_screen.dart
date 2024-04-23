@@ -23,6 +23,13 @@ class _StudentHomePageState extends State<StudentHomePage> {
   Map Attendance = {};
   Map UT_1_marks = {};
   Map UT_2_marks = {};
+  int total_attended = 0;
+  int total_present = 0;
+  String name = '';
+  String div = '';
+
+  double totPercent = 0.0;
+
 
 
   List Subjects = ["EM 3", "CG", "DBMS", "MP"];
@@ -42,7 +49,27 @@ class _StudentHomePageState extends State<StudentHomePage> {
       final UT_Data = data["UT Marks"];
       UT_1_marks = UT_Data["UT 1"];
       UT_2_marks = UT_Data["UT 2"];
-      print(Attendance);
+      name = data["name"];
+      div =  data["division"];
+
+
+      Attendance.forEach((key, value){
+          // total_attended += int.parse("${value["attended"]}");
+          // total_present += int.parse("${value["present"]}");
+        int val_a = value["attended"] != -1 ? int.parse("${value["attended"]}") : 0;
+        int val_t = value["total"] != -1 ? int.parse("${value["total"]}") : 0;
+
+        total_present += val_t;
+        total_attended += val_a;
+      });
+      totPercent =  total_attended != 0 ? (total_attended / total_present)*100 : 0;
+      totPercent = double.parse(totPercent.toStringAsFixed(2));
+
+      print("Percent : $totPercent %");
+      print(total_present);
+      print(total_attended);
+
+
     }
     setState(() {});
   }
@@ -86,7 +113,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
         ),
           actions: [
             IconButton(onPressed: (){
-              generatePDF(UT_1_marks, UT_2_marks, Attendance, ApprovalStatus);
+              generatePDF(UT_1_marks, UT_2_marks, Attendance, ApprovalStatus, name, div );
             }, icon: Icon(Icons.download, size: 30,))
           ]
       ),
@@ -445,11 +472,97 @@ class _StudentHomePageState extends State<StudentHomePage> {
                               )
                               )),
                       ]),
-            
-            
-            
-            
+
+                    TableRow(
+                      children: [
+                        TableCell(
+                          child: Container(
+                            color: appBarColor,
+                            child: Center(
+                              child: Text(
+                                'Total',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Container(
+                            color: appBarColor,
+                            child: Center(
+                              child: Text("$total_attended",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Container(
+                            color: appBarColor,
+                            child: Center(
+                              child: Text("$total_present",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Container(
+                            color: appBarColor,
+                            child: Center(
+                              child: Text('$totPercent %',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
                   ],
+                ),
+
+                SizedBox(height: 30,),
+
+                Visibility(
+                  visible: totPercent < 75,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200], // Grey background color
+                      borderRadius: BorderRadius.circular(2.0), // Border radius of 2
+                    ),
+                    padding: EdgeInsets.all(16.0), // Padding for content
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'DEFAULTER',
+                          style: TextStyle(
+                            color: Colors.red, // Red title color
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(height: 8.0), // Spacer
+                        Text(
+                          'You should increase your attendance before the end of the semester to 75%.',
+                          style: TextStyle(
+                            color: Colors.black, // Black description color
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 
                 Container(height: 400,),

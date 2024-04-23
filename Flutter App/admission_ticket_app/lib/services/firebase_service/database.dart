@@ -8,6 +8,11 @@ class DatabaseMethods{
     return FirebaseFirestore.instance.collection("Users").where("role", isEqualTo: "Student").where("division", isEqualTo: div).snapshots();
   }
 
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getPendingRequests()
+  async {
+    return await FirebaseFirestore.instance.collection("Pending_Approvals").snapshots();
+  }
+
 
   Future<String?> getUserName() async{
     String? uid =  getCurrentUserUid();

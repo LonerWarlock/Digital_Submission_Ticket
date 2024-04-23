@@ -60,7 +60,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 }
                 else
                 {
-                  return const AdminHomePage();
+                  return const AdminPage();
                 }
               }
             },

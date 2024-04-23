@@ -28,6 +28,11 @@ class _StudentInfoPageState extends State<StudentInfoPage> {
   Map UT_1_marks = {};
   Map UT_2_marks = {};
   Map Attendance = {};
+  bool defaulter = false;
+  int total_attended = 0;
+  int total_present = 0;
+  double totPercent = 0.0;
+  String div = "";
 
   List Subjects = ["EM 3", "CG", "DBMS", "MP"];
 
@@ -45,6 +50,34 @@ class _StudentInfoPageState extends State<StudentInfoPage> {
       final UT_Data = data["UT Marks"];
       UT_1_marks = UT_Data["UT 1"];
       UT_2_marks = UT_Data["UT 2"];
+      defaulter = data["defaulter"];
+      div = data["division"];
+
+      Attendance.forEach((key, value){
+        int val_a = value["attended"] != -1 ? int.parse("${value["attended"]}") : 0;
+        int val_t = value["total"] != -1 ? int.parse("${value["total"]}") : 0;
+
+        total_present += val_t;
+        total_attended += val_a;
+      });
+      totPercent =  total_attended != 0 ? (total_attended / total_present)*100 : 0;
+      totPercent = double.parse(totPercent.toStringAsFixed(2));
+
+      print("Percent : $totPercent %");
+      print(total_present);
+      print(total_attended);
+
+      print(defaulter);
+
+      if(totPercent < 75)
+        {
+          defaulter = true;
+          updateData();
+        }
+      else
+        {
+          defaulter = false;
+        }
     }
     setState(() {});
   }
@@ -56,6 +89,7 @@ class _StudentInfoPageState extends State<StudentInfoPage> {
         "UT 2": UT_2_marks,
       },
       "Attendance": Attendance,
+      "defaulter" : defaulter,
     });
   }
 
@@ -117,7 +151,7 @@ class _StudentInfoPageState extends State<StudentInfoPage> {
                 alignment: Alignment.topRight,
                 child: IconButton(
                   onPressed: () {
-                    generatePDF(UT_1_marks, UT_2_marks, Attendance, ApprovalStatus);
+                    generatePDF(UT_1_marks, UT_2_marks, Attendance, ApprovalStatus, widget.userName, div);
                   },
                   icon: const Icon(
                     Icons.download,
@@ -554,12 +588,98 @@ class _StudentInfoPageState extends State<StudentInfoPage> {
                   )
                       )
                   )
-                ])
+                ]),
+              TableRow(
+                children: [
+                  TableCell(
+                    child: Container(
+                      color: appBarColor,
+                      child: Center(
+                        child: Text(
+                          'Total',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  TableCell(
+                    child: Container(
+                      color: appBarColor,
+                      child: Center(
+                        child: Text('$total_attended',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                  TableCell(
+                    child: Container(
+                      color: appBarColor,
+                      child: Center(
+                        child: Text('$total_present',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                  TableCell(
+                    child: Container(
+                      color: appBarColor,
+                      child: Center(
+                        child: Text('$totPercent %',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           SizedBox(
             height: 20,
           ),
+          Visibility(
+            visible: defaulter,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200], // Grey background color
+                borderRadius: BorderRadius.circular(2.0), // Border radius of 2
+              ),
+              padding: EdgeInsets.all(16.0), // Padding for content
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'DEFAULTER',
+                    style: TextStyle(
+                      color: Colors.red, // Red title color
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  SizedBox(height: 8.0), // Spacer
+                  Text(
+                    'Student should increase his attendance before the end of the semester to 75%.',
+                    style: TextStyle(
+                      color: Colors.black, // Black description color
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 20,),
           ElevatedButton(
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(appBarColor)),

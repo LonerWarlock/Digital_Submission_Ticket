@@ -39,7 +39,6 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
         final data = snapshot.data() as Map;
 
         TeacherDiv = data["division assigned"];
-        TeacherLab = data["lab assigned"];
         TeacherName = data["name"];
         print(TeacherLab);
         print(TeacherDiv);

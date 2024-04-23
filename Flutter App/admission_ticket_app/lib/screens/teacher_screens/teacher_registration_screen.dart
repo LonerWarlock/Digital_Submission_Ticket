@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,68 +22,116 @@ class TeacherSignUpPage extends StatefulWidget {
 class _TeacherSignUpPageState extends State<TeacherSignUpPage> {
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
+  TextEditingController qualificationContoller = TextEditingController();
+  TextEditingController experienceController = TextEditingController();
   TextEditingController divController = TextEditingController();
   TextEditingController labController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
-  void signUp() async {
-    AuthService authService = AuthService();
+  // void signUp() async {
+  //   AuthService authService = AuthService();
+  //
+  //   if (passwordController.text.isEmpty ||
+  //       nameController.text.isEmpty ||
+  //       passwordController.text.isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text("Fill all Fields"),
+  //       ),
+  //     );
+  //   } else {
+  //     try {
+  //       await authService.TeachersignUpWithEmailPassword(
+  //         email: emailController.text.toString(),
+  //         password: passwordController.text.toString(),
+  //         name: nameController.text.toString(),
+  //         div: divController.text.toString(),
+  //         lab: labController.text.toString(),
+  //       );
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text("Registered Successfully"),
+  //         ),
+  //       );
+  //
+  //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthWrapper(tutorial: true,)));
+  //
+  //       // No need to call setState here, as the authentication state change
+  //       // will automatically trigger a rebuild in widgets listening to the authStateChanges stream
+  //     } catch (e) {
+  //       String errorMessage = "An error occurred, please try again later."; // Default error message
+  //       switch (e.toString()) {
+  //         case 'weak-password':
+  //           errorMessage = 'The password provided is too weak.';
+  //           break;
+  //         case 'email-already-in-use':
+  //           errorMessage = 'The account already exists for that email.';
+  //           break;
+  //         case 'invalid-email':
+  //           errorMessage = 'The email address is invalid.';
+  //           break;
+  //         case 'operation-not-allowed':
+  //           errorMessage = 'Error occurred during sign up.';
+  //           break;
+  //         default:
+  //           errorMessage = 'An error occurred while signing up.';
+  //           break;
+  //       }
+  //
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(errorMessage),
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
 
-    if (passwordController.text.isEmpty ||
-        nameController.text.isEmpty ||
-        passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Fill all Fields"),
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+
+  createTeacherPendingRequest() async
+  {
+    try
+    {
+      await _firestore.collection("Pending_Approvals").add(
+          {
+            "name" : nameController.text,
+            "qualification" : qualificationContoller.text,
+            "experience" : experienceController.text,
+            "email" : emailController.text,
+            "division assigned" : divController.text,
+          }
+      );
+
+      showDialog(context: context, builder: (context)=>AlertDialog(
+        title: Text("Request Sent Successfully"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ));
+    }
+    catch(e)
+    {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Error"),
+          content: Text("An error occurred while submitting the request."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
         ),
       );
-    } else {
-      try {
-        await authService.TeachersignUpWithEmailPassword(
-          email: emailController.text.toString(),
-          password: passwordController.text.toString(),
-          name: nameController.text.toString(),
-          div: divController.text.toString(),
-          lab: labController.text.toString(),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Registered Successfully"),
-          ),
-        );
-
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AuthWrapper(tutorial: true,)));
-
-        // No need to call setState here, as the authentication state change
-        // will automatically trigger a rebuild in widgets listening to the authStateChanges stream
-      } catch (e) {
-        String errorMessage = "An error occurred, please try again later."; // Default error message
-        switch (e.toString()) {
-          case 'weak-password':
-            errorMessage = 'The password provided is too weak.';
-            break;
-          case 'email-already-in-use':
-            errorMessage = 'The account already exists for that email.';
-            break;
-          case 'invalid-email':
-            errorMessage = 'The email address is invalid.';
-            break;
-          case 'operation-not-allowed':
-            errorMessage = 'Error occurred during sign up.';
-            break;
-          default:
-            errorMessage = 'An error occurred while signing up.';
-            break;
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-          ),
-        );
-      }
     }
+
+
   }
 
   @override
@@ -130,12 +179,11 @@ class _TeacherSignUpPageState extends State<TeacherSignUpPage> {
                             SizedBox(height: 15,),
                             CustomTextField(hintText: "Email", icon: Icon(Icons.email_outlined), obscureText: false, textEditingController: emailController,),
                             SizedBox(height: 15,),
-                            CustomTextField(hintText: "Password", icon: Icon(Icons.lock_outlined), obscureText: true, textEditingController: passwordController,),
+                            CustomTextField(hintText: "Qualification", icon: Icon(Icons.school_outlined), obscureText: false, textEditingController: qualificationContoller,),
+                            SizedBox(height: 15,),
+                            CustomTextField(hintText: "Experience", icon: Icon(Icons.work_history_outlined), obscureText: false, textEditingController: experienceController,),
                             SizedBox(height: 15,),
                             CustomTextField(hintText: "Division Assigned", icon: Icon(Icons.meeting_room_outlined), obscureText: false, textEditingController: divController, ),
-                            SizedBox(height: 15,),
-                            CustomTextField(hintText: "Lab Assigned", icon: Icon(Icons.meeting_room_outlined), obscureText: false, textEditingController: labController,),
-
 
 
                             SizedBox(height: 60,),
@@ -145,7 +193,7 @@ class _TeacherSignUpPageState extends State<TeacherSignUpPage> {
                               borderRadius: BorderRadius.circular(20),
 
                               child: InkWell(
-                                onTap: signUp,
+                                onTap: createTeacherPendingRequest,
                                 child: Container(
 
                                   padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
@@ -153,7 +201,7 @@ class _TeacherSignUpPageState extends State<TeacherSignUpPage> {
                                       color: appBarColor,
                                       borderRadius: BorderRadius.circular(20)
                                   ),
-                                  child: Text("Sign Up", style: AppWidget.boldTextStyle().copyWith(color: Colors.white,),),
+                                  child: Text("Send Request", style: AppWidget.boldTextStyle().copyWith(color: Colors.white,),),
 
                                 ),
                               ),

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-Future<void> generatePDF(Map UT_1_marks, Map UT_2_marks, Map Attendance, Map ApprovalStatus) async {
+Future<void> generatePDF(Map UT_1_marks, Map UT_2_marks, Map Attendance, Map ApprovalStatus, String name, String className) async {
 
   print(UT_1_marks);
 
@@ -22,6 +22,17 @@ Future<void> generatePDF(Map UT_1_marks, Map UT_2_marks, Map Attendance, Map App
                   style: pw.TextStyle(
                       fontSize: 22, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 20),
+
+              pw.Text('Name : $name',
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold)),
+
+              pw.Text('Class : $className',
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold)),
+
+              pw.SizedBox(height: 20,),
+
               _buildReason(UT_1_marks, UT_2_marks, Attendance, ApprovalStatus)
 
             ]

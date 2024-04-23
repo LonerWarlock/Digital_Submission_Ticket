@@ -66,7 +66,8 @@ class AuthService extends ChangeNotifier{
         'role' : 'Student',
         'Approval Status' : approvalStatus,
         "UT Marks" : UT_Marks,
-        "Attendance" : Attendance
+        "Attendance" : Attendance,
+        "defaulter" : false,
       });
 
 
@@ -88,7 +89,6 @@ class AuthService extends ChangeNotifier{
         'email': email,
         'name': name,
         'division assigned' : div,
-        'lab assigned' : lab,
         'role' : 'Teacher',
       });
       print("Online Updated");
@@ -120,19 +120,17 @@ class AuthService extends ChangeNotifier{
     }
   }
 
-  Future<UserCredential> createNewDoctor(String email, String name, String qualification, String location, String experience) async
+  Future<UserCredential> createNewTeacher(String email, String name, String qualification, String div, String experience) async
   {
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: "Doctor1234");
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: "Teacher1234");
     _firestore.collection("Users").doc(userCredential.user!.uid).set({
       'uid': userCredential.user!.uid,
       'email': email,
       'name': name,
-      'image' : 'https://santevitahospital.com/img/vector_design_male_11zon.webp',
       'qualification' : qualification,
-      'location' :location,
       'experience' : experience,
-      'online' : false,
-      'role' : 'Doctor',
+      'division assigned' : div,
+      'role' : 'Teacher',
     });
     return userCredential;
   }
